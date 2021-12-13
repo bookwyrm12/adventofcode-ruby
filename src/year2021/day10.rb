@@ -1,6 +1,6 @@
 module Year2021
   class Day10
-    CHAR_MAP = {')': '(', ']': '[', '}': '{', '>': '<'}
+    CHAR_MAP = {')': '(', ']': '[', '}': '{', '>': '<', '(': ')', '[': ']', '{': '}', '<': '>'}
     PUSH_CHARS = ['(', '[', '{', '<']
     POP_CHARS = [')', ']', '}', '>']
     ILLEGAL_CHAR_SCORES = {
@@ -8,6 +8,12 @@ module Year2021
       ']': 57,
       '}': 1197,
       '>': 25137,
+    }
+    AUTOCOMPLETE_CHAR_SCORES = {
+      ')': 1,
+      ']': 2,
+      '}': 3,
+      '>': 4,
     }
 
     def part1(input)
@@ -23,7 +29,16 @@ module Year2021
     end
 
     def part2(input)
-      nil
+      input = parse_input(input)
+
+      completion_scores = []
+      input.each do |row|
+        status, line_stack = parse_line(row)
+        next if status != :incomplete
+        completion_scores.push(autocomplete_line(line_stack))
+      end
+
+      completion_scores.sort[completion_scores.size.div(2)]
     end
 
     # Helpers
@@ -42,8 +57,17 @@ module Year2021
         end
       end
 
-      return :incomplete, nil if line_stack.size > 0
-      return :success, nil
+      return :incomplete, line_stack if line_stack.size > 0
+      return :success
+    end
+
+    def autocomplete_line(line_stack)
+      score = 0
+      line_stack.reverse.each do |char|
+        closing_char = CHAR_MAP[char.to_sym]
+        score = (score * 5) + AUTOCOMPLETE_CHAR_SCORES[closing_char.to_sym]
+      end
+      score
     end
   end
 end
