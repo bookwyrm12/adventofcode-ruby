@@ -7,7 +7,9 @@ module Year2022
     end
 
     def part2(input)
-      nil
+      input = parse_input(input)
+
+      return input.map{|x| x.sum}.max(3).sum
     end
 
     # Helpers
