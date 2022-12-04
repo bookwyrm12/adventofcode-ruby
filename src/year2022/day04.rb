@@ -31,12 +31,8 @@ module Year2022
     end
 
     def fully_contains?(pair)
-      if (pair[:elf1_start] <= pair[:elf2_start] && pair[:elf1_end] >= pair[:elf2_end]) ||
+      return (pair[:elf1_start] <= pair[:elf2_start] && pair[:elf1_end] >= pair[:elf2_end]) ||
         (pair[:elf1_start] >= pair[:elf2_start] && pair[:elf1_end] <= pair[:elf2_end])
-        return true
-      else
-        return false
-      end
     end
 
     def overlapping?(pair)
