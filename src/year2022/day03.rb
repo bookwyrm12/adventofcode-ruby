@@ -10,7 +10,12 @@ module Year2022
     end
 
     def part2(input)
-      nil
+      input = parse_input(input)
+      badges = input.each_slice(3).map do |group|
+        potential_badges = find_dup_in_string(group[0], group[1], plural: true)
+        find_dup_in_string(potential_badges, group[2])
+      end
+      return badges.map{|item_type| get_priority_of(item_type)}.sum
     end
 
     # Helpers
@@ -18,12 +23,18 @@ module Year2022
       input.split("\n")
     end
 
-    def find_dup_in_string(section1, section2)
+    def find_dup_in_string(section1, section2, plural: false)
+      dups = []
       section2.each_char do |item|
         if section1.include?(item)
-          return item
+          if plural
+            dups.push(item)
+          else
+            return item
+          end
         end
       end
+      return dups
     end
 
     def get_priority_of(item_type)
