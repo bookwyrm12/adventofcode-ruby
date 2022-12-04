@@ -2,11 +2,20 @@ module Year2022
   class Day02
     def part1(input)
       input = parse_input(input)
-      return input.map{|round| get_shape_score(round[1]) + get_outcome_score(round[0], round[1])}.sum
+      scores = input.map do |round|
+        your_response = map_instruction_to_response(round[1])
+        get_shape_score(your_response) + get_outcome_score(round[0], your_response)
+      end
+      return scores.sum
     end
 
     def part2(input)
-      nil
+      input = parse_input(input)
+      scores = input.map do |round|
+        your_response = get_response(round[0], round[1])
+        get_shape_score(your_response) + get_outcome_score(round[0], your_response)
+      end
+      return scores.sum
     end
 
     # Helpers
@@ -19,11 +28,19 @@ module Year2022
       # 2 pts for paper
       # 3 pts for scissors
       play_map = {
-        'X' => 1,
-        'Y' => 2,
-        'Z' => 3,
+        :rock => 1,
+        :paper => 2,
+        :scissors => 3,
       }
       return play_map[you]
+    end
+
+    def map_instruction_to_response(instruction)
+      return {
+        'X' => :rock,
+        'Y' => :paper,
+        'Z' => :scissors,
+      }[instruction]
     end
 
     def get_outcome_score(opponent, you)
@@ -32,22 +49,46 @@ module Year2022
       # 6 pts if you win
       play_map = {
         'A' => {
-          'X' => 3,
-          'Y' => 6,
-          'Z' => 0,
+          :rock => 3,
+          :paper => 6,
+          :scissors => 0,
         },
         'B' => {
-          'X' => 0,
-          'Y' => 3,
-          'Z' => 6,
+          :rock => 0,
+          :paper => 3,
+          :scissors => 6,
         },
         'C' => {
-          'X' => 6,
-          'Y' => 0,
-          'Z' => 3,
+          :rock => 6,
+          :paper => 0,
+          :scissors => 3,
         }
       }
       return play_map[opponent][you]
+    end
+
+    def get_response(opponent, result)
+      # X = lose
+      # Y = draw
+      # Z = win
+      play_map = {
+        'A' => {
+          'X' => :scissors,
+          'Y' => :rock,
+          'Z' => :paper,
+        },
+        'B' => {
+          'X' => :rock,
+          'Y' => :paper,
+          'Z' => :scissors,
+        },
+        'C' => {
+          'X' => :paper,
+          'Y' => :scissors,
+          'Z' => :rock,
+        }
+      }
+      return play_map[opponent][result]
     end
   end
 end
