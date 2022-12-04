@@ -12,7 +12,14 @@ module Year2022
     end
 
     def part2(input)
-      nil
+      input = parse_input(input)
+      overlapping = 0
+      input.each do |pair|
+        if overlapping?(pair)
+          overlapping += 1
+        end
+      end
+      return overlapping
     end
 
     # Helpers
@@ -30,6 +37,10 @@ module Year2022
       else
         return false
       end
+    end
+
+    def overlapping?(pair)
+      return !(pair[:elf1_end] < pair[:elf2_start] || pair[:elf2_end] < pair[:elf1_start])
     end
   end
 end
