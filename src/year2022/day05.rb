@@ -15,8 +15,17 @@ module Year2022
     end
 
     def part2(input)
-      input = parse_input(input)
-      nil
+      stacks, instructions = parse_input(input)
+      
+      instructions.each do |instruction|
+        move_multiple_crates(stacks, instruction)
+      end
+
+      result = []
+      stacks.sort.each do |id, stack|
+        result.push(stack.crates.last)
+      end
+      return result.join
     end
 
     # Helpers
@@ -54,6 +63,10 @@ module Year2022
         stacks[instruction.to_stack].add_crate(stacks[instruction.from_stack].remove_crate)
       end
     end
+
+    def move_multiple_crates(stacks, instruction)
+      stacks[instruction.to_stack].add_multiple_crates(stacks[instruction.from_stack].remove_multiple_crates(instruction.num_crates))
+    end
   end
 
   class CrateStack
@@ -70,6 +83,14 @@ module Year2022
 
     def remove_crate()
       return self.crates.pop
+    end
+
+    def add_multiple_crates(new_crates)
+      return self.crates.push(new_crates).flatten!
+    end
+
+    def remove_multiple_crates(num_crates)
+      return self.crates.pop(num_crates)
     end
 
     def flip_stack()
